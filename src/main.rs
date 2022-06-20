@@ -29,21 +29,28 @@ pub struct EndTracker {
 #[allow(unused)]
 mod tracker {
     use chrono::{DateTime, Utc};
-    pub fn start_track<UTC: chrono::TimeZone>(start_date: DateTime<UTC>) {
+    use reqwest;
+    pub async fn start_track<UTC: chrono::TimeZone>(start_date: DateTime<UTC>) -> Result<(), reqwest::Error> {
         println!("Start Date: ");
+        return Ok(());
     }
-    pub fn stop_track<UTC: chrono::TimeZone>(stop_date: DateTime<UTC>) {
-        // let client = reqwest::Client::new();
-        // let res = client
-        //     .post("http://httpbin.org/post")
-        //     .body("the exact body that is sent")
-        //     .send()
-        //     .await?;
-        println!("Stop Date: ");
+    pub async fn stop_track<UTC: chrono::TimeZone>(stop_date: DateTime<UTC>, BASE_URL: String) -> Result<(), reqwest::Error> {
+        println!("{}", BASE_URL);
+        // let res = reqwest::get("https://www.rust-lang.org").await;
+        let body = reqwest::get("https://www.rust-lang.org")
+            .await?
+            .text()
+            .await?;
+
+        println!("body = {:?}", body);
+
+        return Ok(());
+
     }
 }
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<(), reqwest::Error> {
     // let args = Cli {
     //     mode: track_mode,
     //     time: track_time,
@@ -64,10 +71,10 @@ fn main() {
         .unwrap();
     println!("{:?}", config_local.get("BASE_URL"));
     println!("{:?}", args.track_mode);
+    let BASE_URL: String = String::from("https://api.clockify.me/api/v1");
     match &*args.track_mode {
-        "start" => tracker::start_track(Local::now()),
-        "stop" => tracker::stop_track(Local::now()),
+        "start" => tracker::start_track(Local::now()).await,
+        "stop" => tracker::stop_track(Local::now(), BASE_URL).await,
         _ => panic!("Option is not valid!"),
     }
-    ()
 }
