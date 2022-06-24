@@ -61,14 +61,13 @@ mod tracker {
         let mut map = HashMap::new();
         println!("UTC now is: {}", start_date.format("%Y-%m-%dT%TZ"));
         println!("URL: {}", url);
-        println!("{} {} {}", workspace_id, base_url, user_id);
+        println!("workspace: {} base: {} user: {} project:{}", workspace_id, base_url, user_id, project_id);
         let start = format!("{}", start_date.format("%Y-%m-%dT%TZ"));
         map.insert("start", start);
         map.insert("description", "Working tasks".to_string());
-        map.insert("projectID", project_id);
+        map.insert("projectId", project_id);
         let mut headers = header::HeaderMap::new();
         headers.insert("content-type", header::HeaderValue::from_static("application/json"));
-        // headers.insert("X-Api-Key", header::HeaderValue::from_static(&api_key));
 
         let client = reqwest::Client::builder()
             .default_headers(headers)
