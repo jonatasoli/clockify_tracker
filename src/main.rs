@@ -68,13 +68,14 @@ mod tracker {
         map.insert("projectID", project_id);
         let mut headers = header::HeaderMap::new();
         headers.insert("content-type", header::HeaderValue::from_static("application/json"));
-        headers.insert("X-Api-Key", header::HeaderValue::from_static(&api_key));
+        // headers.insert("X-Api-Key", header::HeaderValue::from_static(&api_key));
 
         let client = reqwest::Client::builder()
             .default_headers(headers)
             .timeout(std::time::Duration::from_millis(5000))
             .build()?;
         let res = client.post(url)
+            .header("X-Api-Key", &api_key)
             .json(&map)
             .send()
             .await?
@@ -114,12 +115,12 @@ mod tracker {
         map.insert("end", end);
         let mut headers = header::HeaderMap::new();
         headers.insert("content-type", header::HeaderValue::from_static("application/json"));
-        headers.insert("X-Api-Key", header::HeaderValue::from_static(&api_key));
         let client = reqwest::Client::builder()
             .default_headers(headers)
             .timeout(std::time::Duration::from_millis(5000))
             .build()?;
         let res = client.patch(url)
+            .header("X-Api-Key", &api_key)
             .json(&map)
             .send()
             .await?
